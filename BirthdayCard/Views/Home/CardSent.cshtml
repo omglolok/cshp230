@@ -1,0 +1,39 @@
+﻿@model BirthdayCard.Models.Message
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/Content/styles.css" />
+    <title>Birthday Message</title>
+</head>
+<body>
+    <div class="container">
+        <h2 class="page-header col-xs-12">Birthday Card Generator</h2>
+        <h1 class="col-xs-12">Birthday card sent!</h1>
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary()
+        <div class="col-xs-12">
+            <label>From:</label> <div class="well well-sm">@Model.From</div>
+            <label>To:</label> <div class="well well-sm"> @Model.To</div>
+            <label>Message:</label> <div class="well"> @Model.BirthdayMessage</div>
+        </div>
+        }
+
+        <hr>
+        <div>©@DateTime.Now.Year - My ASP.NET Application</div>
+    </div>
+
+
+
+</body>
+</html>
