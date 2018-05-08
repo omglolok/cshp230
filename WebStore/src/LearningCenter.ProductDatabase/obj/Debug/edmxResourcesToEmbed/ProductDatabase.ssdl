@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SchoolModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Category">
+    <Key>
+      <PropertyRef Name="CategoryId" />
+    </Key>
+    <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="ClassCategory">
+    <Key>
+      <PropertyRef Name="CategoryId" />
+      <PropertyRef Name="ClassId" />
+    </Key>
+    <Property Name="CategoryId" Type="int" Nullable="false" />
+    <Property Name="ClassId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ClassMaster">
+    <Key>
+      <PropertyRef Name="ClassId" />
+    </Key>
+    <Property Name="ClassId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ClassName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ClassDescription" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ClassPrice" Type="money" Nullable="false" />
+    <Property Name="ClassSessions" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="UserClasses">
+    <Key>
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="ClassId" />
+    </Key>
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="ClassId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_ClassCategory_Category">
+    <End Role="Category" Type="Self.Category" Multiplicity="1" />
+    <End Role="ClassCategory" Type="Self.ClassCategory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="CategoryId" />
+      </Principal>
+      <Dependent Role="ClassCategory">
+        <PropertyRef Name="CategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ClassCategory_Class">
+    <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="1" />
+    <End Role="ClassCategory" Type="Self.ClassCategory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ClassMaster">
+        <PropertyRef Name="ClassId" />
+      </Principal>
+      <Dependent Role="ClassCategory">
+        <PropertyRef Name="ClassId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserClasses_ClassMaster">
+    <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="1" />
+    <End Role="UserClasses" Type="Self.UserClasses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ClassMaster">
+        <PropertyRef Name="ClassId" />
+      </Principal>
+      <Dependent Role="UserClasses">
+        <PropertyRef Name="ClassId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserClasses_Users">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="UserClasses" Type="Self.UserClasses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserClasses">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="SchoolModelStoreContainer">
+    <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ClassMaster" EntityType="Self.ClassMaster" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserClasses" EntityType="Self.UserClasses" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ClassCategory" EntityType="Self.ClassCategory" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [ClassCategory].[CategoryId] AS [CategoryId], 
+    [ClassCategory].[ClassId] AS [ClassId]
+    FROM [dbo].[ClassCategory] AS [ClassCategory]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_ClassCategory_Category" Association="Self.FK_ClassCategory_Category">
+      <End Role="Category" EntitySet="Category" />
+      <End Role="ClassCategory" EntitySet="ClassCategory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ClassCategory_Class" Association="Self.FK_ClassCategory_Class">
+      <End Role="ClassMaster" EntitySet="ClassMaster" />
+      <End Role="ClassCategory" EntitySet="ClassCategory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserClasses_ClassMaster" Association="Self.FK_UserClasses_ClassMaster">
+      <End Role="ClassMaster" EntitySet="ClassMaster" />
+      <End Role="UserClasses" EntitySet="UserClasses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserClasses_Users" Association="Self.FK_UserClasses_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserClasses" EntitySet="UserClasses" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
