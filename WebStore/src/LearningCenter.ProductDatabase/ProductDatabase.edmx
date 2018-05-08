@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="SchoolModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ClassCategory">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+            <PropertyRef Name="ClassId" />
+          </Key>
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="ClassId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ClassMaster">
+          <Key>
+            <PropertyRef Name="ClassId" />
+          </Key>
+          <Property Name="ClassId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClassName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ClassDescription" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ClassPrice" Type="money" Nullable="false" />
+          <Property Name="ClassSessions" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="UserClasses">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="ClassId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="ClassId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_ClassCategory_Category">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="ClassCategory" Type="Self.ClassCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="ClassCategory">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClassCategory_Class">
+          <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="1" />
+          <End Role="ClassCategory" Type="Self.ClassCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClassMaster">
+              <PropertyRef Name="ClassId" />
+            </Principal>
+            <Dependent Role="ClassCategory">
+              <PropertyRef Name="ClassId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserClasses_ClassMaster">
+          <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="1" />
+          <End Role="UserClasses" Type="Self.UserClasses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClassMaster">
+              <PropertyRef Name="ClassId" />
+            </Principal>
+            <Dependent Role="UserClasses">
+              <PropertyRef Name="ClassId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserClasses_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="UserClasses" Type="Self.UserClasses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserClasses">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SchoolModelStoreContainer">
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClassMaster" EntityType="Self.ClassMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserClasses" EntityType="Self.UserClasses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClassCategory" EntityType="Self.ClassCategory" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ClassCategory].[CategoryId] AS [CategoryId], 
+    [ClassCategory].[ClassId] AS [ClassId]
+    FROM [dbo].[ClassCategory] AS [ClassCategory]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_ClassCategory_Category" Association="Self.FK_ClassCategory_Category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="ClassCategory" EntitySet="ClassCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClassCategory_Class" Association="Self.FK_ClassCategory_Class">
+            <End Role="ClassMaster" EntitySet="ClassMaster" />
+            <End Role="ClassCategory" EntitySet="ClassCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserClasses_ClassMaster" Association="Self.FK_UserClasses_ClassMaster">
+            <End Role="ClassMaster" EntitySet="ClassMaster" />
+            <End Role="UserClasses" EntitySet="UserClasses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserClasses_Users" Association="Self.FK_UserClasses_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserClasses" EntitySet="UserClasses" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SchoolModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="ClassMasters" Relationship="Self.ClassCategory" FromRole="Category" ToRole="ClassMaster" />
+        </EntityType>
+        <EntityType Name="ClassMaster">
+          <Key>
+            <PropertyRef Name="ClassId" />
+          </Key>
+          <Property Name="ClassId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClassName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ClassDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ClassPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="ClassSessions" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Users" Relationship="Self.UserClasses" FromRole="ClassMaster" ToRole="Users" />
+          <NavigationProperty Name="Categories" Relationship="Self.ClassCategory" FromRole="ClassMaster" ToRole="Category" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="ClassMasters" Relationship="Self.UserClasses" FromRole="Users" ToRole="ClassMaster" />
+        </EntityType>
+        <Association Name="UserClasses">
+          <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="*" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+        </Association>
+        <Association Name="ClassCategory">
+          <End Role="Category" Type="Self.Category" Multiplicity="*" />
+          <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="SchoolEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categories" EntityType="Self.Category" />
+          <EntitySet Name="ClassMasters" EntityType="Self.ClassMaster" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="UserClasses" Association="Self.UserClasses">
+            <End Role="ClassMaster" EntitySet="ClassMasters" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="ClassCategory" Association="Self.ClassCategory">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="ClassMaster" EntitySet="ClassMasters" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SchoolModelStoreContainer" CdmEntityContainer="SchoolEntities">
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="SchoolModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClassMasters">
+            <EntityTypeMapping TypeName="SchoolModel.ClassMaster">
+              <MappingFragment StoreEntitySet="ClassMaster">
+                <ScalarProperty Name="ClassId" ColumnName="ClassId" />
+                <ScalarProperty Name="ClassName" ColumnName="ClassName" />
+                <ScalarProperty Name="ClassDescription" ColumnName="ClassDescription" />
+                <ScalarProperty Name="ClassPrice" ColumnName="ClassPrice" />
+                <ScalarProperty Name="ClassSessions" ColumnName="ClassSessions" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="SchoolModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="SchoolModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="UserClasses" TypeName="SchoolModel.UserClasses" StoreEntitySet="UserClasses">
+            <EndProperty Name="ClassMaster">
+              <ScalarProperty Name="ClassId" ColumnName="ClassId" />
+            </EndProperty>
+            <EndProperty Name="Users">
+              <ScalarProperty Name="UserId" ColumnName="UserId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="ClassCategory" TypeName="SchoolModel.ClassCategory" StoreEntitySet="ClassCategory">
+            <EndProperty Name="Category">
+              <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+            </EndProperty>
+            <EndProperty Name="ClassMaster">
+              <ScalarProperty Name="ClassId" ColumnName="ClassId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
