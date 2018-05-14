@@ -19,6 +19,7 @@
     <Property Name="ClassSessions" Type="Int32" Nullable="false" />
     <NavigationProperty Name="Users" Relationship="Self.UserClasses" FromRole="ClassMaster" ToRole="Users" />
     <NavigationProperty Name="Categories" Relationship="Self.ClassCategory" FromRole="ClassMaster" ToRole="Category" />
+    <NavigationProperty Name="UserCarts" Relationship="SchoolModel.FK_UserCart_ClassMaster" FromRole="ClassMaster" ToRole="UserCart" />
   </EntityType>
   <EntityType Name="sysdiagram">
     <Key>
@@ -41,6 +42,7 @@
     <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <NavigationProperty Name="ClassMasters" Relationship="Self.UserClasses" FromRole="Users" ToRole="ClassMaster" />
+    <NavigationProperty Name="UserCarts" Relationship="SchoolModel.FK_UserCart_Users" FromRole="User" ToRole="UserCart" />
   </EntityType>
   <Association Name="UserClasses">
     <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="*" />
@@ -63,5 +65,49 @@
       <End Role="Category" EntitySet="Categories" />
       <End Role="ClassMaster" EntitySet="ClassMasters" />
     </AssociationSet>
+    <EntitySet Name="UserCarts" EntityType="SchoolModel.UserCart" />
+    <AssociationSet Name="FK_UserCart_ClassMaster" Association="SchoolModel.FK_UserCart_ClassMaster">
+      <End Role="ClassMaster" EntitySet="ClassMasters" />
+      <End Role="UserCart" EntitySet="UserCarts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserCart_Users" Association="SchoolModel.FK_UserCart_Users">
+      <End Role="User" EntitySet="Users" />
+      <End Role="UserCart" EntitySet="UserCarts" />
+    </AssociationSet>
   </EntityContainer>
+  <EntityType Name="UserCart">
+    <Key>
+      <PropertyRef Name="CartId" />
+    </Key>
+    <Property Name="CartId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="ClassId" Type="Int32" Nullable="false" />
+    <Property Name="DateAdded" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="ClassMaster" Relationship="SchoolModel.FK_UserCart_ClassMaster" FromRole="UserCart" ToRole="ClassMaster" />
+    <NavigationProperty Name="User" Relationship="SchoolModel.FK_UserCart_Users" FromRole="UserCart" ToRole="User" />
+  </EntityType>
+  <Association Name="FK_UserCart_ClassMaster">
+    <End Type="SchoolModel.ClassMaster" Role="ClassMaster" Multiplicity="1" />
+    <End Type="SchoolModel.UserCart" Role="UserCart" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ClassMaster">
+        <PropertyRef Name="ClassId" />
+      </Principal>
+      <Dependent Role="UserCart">
+        <PropertyRef Name="ClassId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserCart_Users">
+    <End Type="SchoolModel.User" Role="User" Multiplicity="1" />
+    <End Type="SchoolModel.UserCart" Role="UserCart" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserCart">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

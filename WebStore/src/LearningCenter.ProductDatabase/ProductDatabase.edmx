@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="SchoolModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="SchoolModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Category">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -41,6 +41,15 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
           <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="UserCart">
+          <Key>
+            <PropertyRef Name="CartId" />
+          </Key>
+          <Property Name="CartId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="ClassId" Type="int" Nullable="false" />
+          <Property Name="DateAdded" Type="datetime" />
         </EntityType>
         <EntityType Name="UserClasses">
           <Key>
@@ -85,6 +94,30 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserCart_ClassMaster">
+          <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="1" />
+          <End Role="UserCart" Type="Self.UserCart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClassMaster">
+              <PropertyRef Name="ClassId" />
+            </Principal>
+            <Dependent Role="UserCart">
+              <PropertyRef Name="ClassId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserCart_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="UserCart" Type="Self.UserCart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserCart">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserClasses_ClassMaster">
           <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="1" />
           <End Role="UserClasses" Type="Self.UserClasses" Multiplicity="*" />
@@ -113,6 +146,7 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ClassMaster" EntityType="Self.ClassMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserCart" EntityType="Self.UserCart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserClasses" EntityType="Self.UserClasses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ClassCategory" EntityType="Self.ClassCategory" store:Type="Tables" store:Schema="dbo">
@@ -129,6 +163,14 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
             <End Role="ClassMaster" EntitySet="ClassMaster" />
             <End Role="ClassCategory" EntitySet="ClassCategory" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserCart_ClassMaster" Association="Self.FK_UserCart_ClassMaster">
+            <End Role="ClassMaster" EntitySet="ClassMaster" />
+            <End Role="UserCart" EntitySet="UserCart" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserCart_Users" Association="Self.FK_UserCart_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserCart" EntitySet="UserCart" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserClasses_ClassMaster" Association="Self.FK_UserClasses_ClassMaster">
             <End Role="ClassMaster" EntitySet="ClassMaster" />
             <End Role="UserClasses" EntitySet="UserClasses" />
@@ -138,8 +180,7 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
             <End Role="UserClasses" EntitySet="UserClasses" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SchoolModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -162,6 +203,7 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
           <Property Name="ClassSessions" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Users" Relationship="Self.UserClasses" FromRole="ClassMaster" ToRole="Users" />
           <NavigationProperty Name="Categories" Relationship="Self.ClassCategory" FromRole="ClassMaster" ToRole="Category" />
+          <NavigationProperty Name="UserCarts" Relationship="SchoolModel.FK_UserCart_ClassMaster" FromRole="ClassMaster" ToRole="UserCart" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -184,6 +226,7 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
           <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="ClassMasters" Relationship="Self.UserClasses" FromRole="Users" ToRole="ClassMaster" />
+          <NavigationProperty Name="UserCarts" Relationship="SchoolModel.FK_UserCart_Users" FromRole="User" ToRole="UserCart" />
         </EntityType>
         <Association Name="UserClasses">
           <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="*" />
@@ -206,7 +249,51 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
             <End Role="Category" EntitySet="Categories" />
             <End Role="ClassMaster" EntitySet="ClassMasters" />
           </AssociationSet>
+          <EntitySet Name="UserCarts" EntityType="SchoolModel.UserCart" />
+          <AssociationSet Name="FK_UserCart_ClassMaster" Association="SchoolModel.FK_UserCart_ClassMaster">
+            <End Role="ClassMaster" EntitySet="ClassMasters" />
+            <End Role="UserCart" EntitySet="UserCarts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserCart_Users" Association="SchoolModel.FK_UserCart_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserCart" EntitySet="UserCarts" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="UserCart">
+          <Key>
+            <PropertyRef Name="CartId" />
+          </Key>
+          <Property Name="CartId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="ClassId" Type="Int32" Nullable="false" />
+          <Property Name="DateAdded" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ClassMaster" Relationship="SchoolModel.FK_UserCart_ClassMaster" FromRole="UserCart" ToRole="ClassMaster" />
+          <NavigationProperty Name="User" Relationship="SchoolModel.FK_UserCart_Users" FromRole="UserCart" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_UserCart_ClassMaster">
+          <End Type="SchoolModel.ClassMaster" Role="ClassMaster" Multiplicity="1" />
+          <End Type="SchoolModel.UserCart" Role="UserCart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ClassMaster">
+              <PropertyRef Name="ClassId" />
+            </Principal>
+            <Dependent Role="UserCart">
+              <PropertyRef Name="ClassId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserCart_Users">
+          <End Type="SchoolModel.User" Role="User" Multiplicity="1" />
+          <End Type="SchoolModel.UserCart" Role="UserCart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserCart">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -271,6 +358,16 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
               <ScalarProperty Name="ClassId" ColumnName="ClassId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="UserCarts">
+            <EntityTypeMapping TypeName="SchoolModel.UserCart">
+              <MappingFragment StoreEntitySet="UserCart">
+                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
+                <ScalarProperty Name="ClassId" ColumnName="ClassId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="CartId" ColumnName="CartId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

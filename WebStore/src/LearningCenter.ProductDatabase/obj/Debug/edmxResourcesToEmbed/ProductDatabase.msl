@@ -59,5 +59,15 @@
         <ScalarProperty Name="ClassId" ColumnName="ClassId" />
       </EndProperty>
     </AssociationSetMapping>
+    <EntitySetMapping Name="UserCarts">
+      <EntityTypeMapping TypeName="SchoolModel.UserCart">
+        <MappingFragment StoreEntitySet="UserCart">
+          <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
+          <ScalarProperty Name="ClassId" ColumnName="ClassId" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="CartId" ColumnName="CartId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>
