@@ -160,6 +160,9 @@
     </Compile>
     <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Models\IndexModel.cs" />
+    <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\RegisterModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -185,7 +188,9 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -199,6 +204,9 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\LogIn.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Home\Register.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -220,6 +228,10 @@
     <ProjectReference Include="..\LearningCenter.Business\LearningCenter.Business.csproj">
       <Project>{587e669e-d30c-4c81-9c55-10a8f3e182d5}</Project>
       <Name>LearningCenter.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LearningCenter.Repository\LearningCenter.Repository.csproj">
+      <Project>{BFFD83F7-9367-4C3C-AA94-C2C3AEC296B0}</Project>
+      <Name>LearningCenter.Repository</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

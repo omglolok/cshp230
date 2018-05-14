@@ -37,6 +37,15 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
     <Property Name="version" Type="int" />
     <Property Name="definition" Type="varbinary(max)" />
   </EntityType>
+  <EntityType Name="UserCart">
+    <Key>
+      <PropertyRef Name="CartId" />
+    </Key>
+    <Property Name="CartId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="ClassId" Type="int" Nullable="false" />
+    <Property Name="DateAdded" Type="datetime" />
+  </EntityType>
   <EntityType Name="UserClasses">
     <Key>
       <PropertyRef Name="UserId" />
@@ -80,6 +89,30 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_UserCart_ClassMaster">
+    <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="1" />
+    <End Role="UserCart" Type="Self.UserCart" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ClassMaster">
+        <PropertyRef Name="ClassId" />
+      </Principal>
+      <Dependent Role="UserCart">
+        <PropertyRef Name="ClassId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserCart_Users">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="UserCart" Type="Self.UserCart" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserCart">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_UserClasses_ClassMaster">
     <End Role="ClassMaster" Type="Self.ClassMaster" Multiplicity="1" />
     <End Role="UserClasses" Type="Self.UserClasses" Multiplicity="*" />
@@ -108,6 +141,7 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
     <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ClassMaster" EntityType="Self.ClassMaster" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserCart" EntityType="Self.UserCart" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserClasses" EntityType="Self.UserClasses" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ClassCategory" EntityType="Self.ClassCategory" store:Type="Tables" store:Schema="dbo">
@@ -123,6 +157,14 @@ warning 6002: The table/view 'School.dbo.ClassCategory' does not have a primary 
     <AssociationSet Name="FK_ClassCategory_Class" Association="Self.FK_ClassCategory_Class">
       <End Role="ClassMaster" EntitySet="ClassMaster" />
       <End Role="ClassCategory" EntitySet="ClassCategory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserCart_ClassMaster" Association="Self.FK_UserCart_ClassMaster">
+      <End Role="ClassMaster" EntitySet="ClassMaster" />
+      <End Role="UserCart" EntitySet="UserCart" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserCart_Users" Association="Self.FK_UserCart_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserCart" EntitySet="UserCart" />
     </AssociationSet>
     <AssociationSet Name="FK_UserClasses_ClassMaster" Association="Self.FK_UserClasses_ClassMaster">
       <End Role="ClassMaster" EntitySet="ClassMaster" />

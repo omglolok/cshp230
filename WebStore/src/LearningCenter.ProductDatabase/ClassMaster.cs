@@ -19,6 +19,7 @@ namespace LearningCenter.ProductDatabase
         {
             this.Users = new HashSet<User>();
             this.Categories = new HashSet<Category>();
+            this.UserCarts = new HashSet<UserCart>();
         }
     
         public int ClassId { get; set; }
@@ -31,5 +32,7 @@ namespace LearningCenter.ProductDatabase
         public virtual ICollection<User> Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Category> Categories { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserCart> UserCarts { get; set; }
     }
 }
