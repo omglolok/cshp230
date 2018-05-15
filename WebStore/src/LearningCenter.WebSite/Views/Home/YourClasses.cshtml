@@ -1,0 +1,58 @@
+﻿@model LearningCenter.WebSite.Models.IndexModel
+
+@{
+    ViewBag.Title = "YourClasses";
+}
+
+<h2>Your Classes</h2>
+
+@if (Model != null)
+{
+    <div class="panel-group" role="tablist">
+        <div class="panel panel-default">
+            @{var index = 1;}
+            @foreach (var category in Model.Categories)
+            {
+
+                <div class="panel-heading" role="tab" id="collapseListGroupHeading-@index.ToString() ">
+                    <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse" href="#collapseListGroup-@index.ToString()" aria-expanded="false" aria-controls="collapseListGroup-@index.ToString()">
+                            <span class="glyphicon glyphicon-plus"></span> @category.Category.Name
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseListGroup-@index.ToString()" class="panel-collapse collapsed collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading-@index.ToString()" aria-expanded="false" style="">
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Class Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Sessions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var subject in category.Classes)
+                            {
+                                <tr>
+                                    <td>@subject.Name</td>
+                                    <td>@subject.Description</td>
+                                    <td>@String.Format("{0:C}", subject.Price)</td>
+                                    <td>@subject.Sessions</td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+                index++;
+            }
+        </div>
+    </div>
+}
+else
+{
+<div>
+    You are not currently enrolled in any classes.
+</div>
+}

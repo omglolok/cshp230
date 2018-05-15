@@ -12,18 +12,23 @@ namespace LearningCenter.WebSite.Controllers
     {
         private readonly ICategoryManager categoryManager;
         private readonly IUserManager userManager;
-        public HomeController(ICategoryManager categoryManager, IUserManager userManager)
+        private readonly IClassManager classManager;
+        private readonly ICartManager cartManager;
+        private static int userId = -1;
+        public HomeController(ICategoryManager categoryManager,
+                              IUserManager userManager,
+                              IClassManager classManager,
+                              ICartManager cartManager)
         {
             this.categoryManager = categoryManager;
             this.userManager = userManager;
+            this.classManager = classManager;
+            this.cartManager = cartManager;
         }
         public ActionResult Index()
         {
-            var categories = categoryManager.Categories
-                .Select(t => new LearningCenter.WebSite.Models.CategoryModel(t.Id, t.Name))
-                .ToArray();
-            var model = new IndexModel { Categories = categories };
-            return View(model);
+
+            return View();
         }
 
         public ActionResult LogIn()
@@ -44,6 +49,7 @@ namespace LearningCenter.WebSite.Controllers
                 {
                     Session["User"] = new UserModel { Id = user.Id, FirstName = user.FirstName, LastName = user.LastName, Email = user.Email, Username = user.Username };
                     System.Web.Security.FormsAuthentication.SetAuthCookie(loginModel.Email, false);
+                    userId = user.Id;
                     return Redirect(returnUrl ?? "~/");
                 }
             }
@@ -92,6 +98,104 @@ namespace LearningCenter.WebSite.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        public ActionResult OurClasses()
+        {
+            var categories = categoryManager.Categories
+                .Select(t => new Models.CategoryModel(t.Id, t.Name))
+                .ToArray();
+            var model = new IndexModel();
+            var categoryList = new List<CategoryViewModel>();
+            foreach (var category in categories)
+            {
+                var classes = classManager
+                                    .ClassesByCategory(category.Id)
+                                    .Select(t =>
+                                        new Models.ClassModel
+                                        {
+                                            Id = t.Id,
+                                            Name = t.Name,
+                                            Description = t.Description,
+                                            Price = t.Price,
+                                            Sessions = t.Sessions
+                                        }).ToArray();
+
+                categoryList.Add(new CategoryViewModel { Category = new Models.CategoryModel(category.Id, category.Name), Classes = classes });
+
+            }
+            model.Categories = categoryList;
+            return View(model);
+        }
+
+        public ActionResult YourClasses()
+        {
+            var categories = categoryManager.Categories
+                .Select(t => new Models.CategoryModel(t.Id, t.Name))
+                .ToArray();
+            var model = new IndexModel();
+            var categoryList = new List<CategoryViewModel>();
+            foreach (var category in categories)
+            {
+                if (userId != -1)
+                {
+                    var classes = classManager
+                                        .ClassesByUser(userId)
+                                        .Select(t =>
+                                            new Models.ClassModel
+                                            {
+                                                Id = t.Id,
+                                                Name = t.Name,
+                                                Description = t.Description,
+                                                Price = t.Price,
+                                                Sessions = t.Sessions
+                                            }).ToArray();
+
+                    categoryList.Add(new CategoryViewModel { Category = new Models.CategoryModel(category.Id, category.Name), Classes = classes });
+
+                }
+                model.Categories = categoryList;
+                return View(model);
+            }
+            return View();
+        }
+        public ActionResult ViewCart()
+        {
+            var cart = cartManager.GetAllClasses(userId)
+                .Select(t => new CartItem
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Price = t.Price
+                })
+                .ToArray();
+
+            return View(cart);
+        }
+        public ActionResult AddToCart(int classId)
+        {
+            if (userId != -1)
+            {
+                cartManager.Add(userId, classId);
+            }
+            return Redirect("~/Home/ViewCart");
+        }
+        public ActionResult Enroll(int classId)
+        {
+            if (userId != -1)
+            {
+                cartManager.Enroll(userId, classId);
+                cartManager.Remove(userId, classId);
+            }
+            return Redirect("~/Home/YourClasses");
+        }
+        public ActionResult Remove(int classId)
+        {
+            if (userId != -1)
+            {
+                cartManager.Remove(userId, classId);
+            }
+            return Redirect("~/Home/ViewCart");
         }
     }
 }

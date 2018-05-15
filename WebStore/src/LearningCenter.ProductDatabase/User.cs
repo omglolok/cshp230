@@ -17,8 +17,8 @@ namespace LearningCenter.ProductDatabase
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.ClassMasters = new HashSet<ClassMaster>();
             this.UserCarts = new HashSet<UserCart>();
+            this.ClassMasters = new HashSet<ClassMaster>();
         }
     
         public int UserId { get; set; }
@@ -29,8 +29,8 @@ namespace LearningCenter.ProductDatabase
         public string Email { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ClassMaster> ClassMasters { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserCart> UserCarts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ClassMaster> ClassMasters { get; set; }
     }
 }
