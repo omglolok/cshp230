@@ -74,7 +74,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CartRepository.cs" />
     <Compile Include="CategoryRepository.cs" />
+    <Compile Include="ClassRepository.cs" />
     <Compile Include="DatabaseAccessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserRepository.cs" />
